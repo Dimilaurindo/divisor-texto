@@ -55,10 +55,12 @@
       border: 1px solid #333;
       padding: 10px;
       margin-bottom: 10px;
-      white-space: pre-wrap;
       background: inherit;
       position: relative;
       border-radius: 4px;
+      max-height: 150px;
+      overflow-y: auto;
+      white-space: pre-wrap;
     }
 
     .copy-btn {
@@ -184,38 +186,31 @@
     }
 
     function dividirTexto() {
-      const texto = document.getElementById('inputText').value.trim();
+      const textoOriginal = document.getElementById('inputText').value.trim();
       const select = document.getElementById('presetLimit');
       const custom = document.getElementById('customLimit').value;
       const limite = parseInt(select.value !== 'custom' ? select.value : custom);
       const resultado = document.getElementById('resultado');
       resultado.innerHTML = '';
 
-      if (!texto || isNaN(limite) || limite <= 0) {
+      if (!textoOriginal || isNaN(limite) || limite <= 0) {
         alert("Insira um texto válido e um limite de caracteres.");
         return;
       }
 
-      const paragrafos = texto.split(/\n\s*\n/);
-      let parteAtual = '';
+      const sentencas = textoOriginal.match(/[^.!?]+[.!?]+(\s|$)/g) || [textoOriginal];
       let partes = [];
+      let parteAtual = "";
 
-      for (let p of paragrafos) {
-        if ((parteAtual + '\n\n' + p).length <= limite) {
-          parteAtual += (parteAtual ? '\n\n' : '') + p;
+      for (let frase of sentencas) {
+        if ((parteAtual + frase).length <= limite) {
+          parteAtual += frase;
         } else {
-          if (parteAtual) partes.push(parteAtual);
-          if (p.length > limite) {
-            for (let i = 0; i < p.length; i += limite) {
-              partes.push(p.slice(i, i + limite));
-            }
-            parteAtual = '';
-          } else {
-            parteAtual = p;
-          }
+          if (parteAtual) partes.push(parteAtual.trim());
+          parteAtual = frase;
         }
       }
-      if (parteAtual) partes.push(parteAtual);
+      if (parteAtual) partes.push(parteAtual.trim());
 
       partes.forEach((parte, i) => {
         const div = document.createElement('div');
