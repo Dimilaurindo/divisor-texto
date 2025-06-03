@@ -1,5 +1,4 @@
-# Atualizando o HTML para mover o seletor de tema discretamente para o rodapé
-footer_theme_html = """
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -197,13 +196,13 @@ footer_theme_html = """
         return;
       }
 
-      const paragrafos = texto.split(/\\n\\s*\\n/);
+      const paragrafos = texto.split(/\n\s*\n/);
       let parteAtual = '';
       let partes = [];
 
       for (let p of paragrafos) {
-        if ((parteAtual + '\\n\\n' + p).length <= limite) {
-          parteAtual += (parteAtual ? '\\n\\n' : '') + p;
+        if ((parteAtual + '\n\n' + p).length <= limite) {
+          parteAtual += (parteAtual ? '\n\n' : '') + p;
         } else {
           if (parteAtual) partes.push(parteAtual);
           if (p.length > limite) {
@@ -221,7 +220,7 @@ footer_theme_html = """
       partes.forEach((parte, i) => {
         const div = document.createElement('div');
         div.className = 'output-part';
-        div.innerHTML = `<strong>Parte ${i + 1}:</strong><br><br>${parte.replace(/\\n/g, "<br>")}`;
+        div.innerHTML = `<strong>Parte ${i + 1}:</strong><br><br>${parte.replace(/\n/g, "<br>")}`;
         const button = document.createElement('button');
         button.className = 'copy-btn';
         button.textContent = 'Copiar';
@@ -247,10 +246,3 @@ footer_theme_html = """
   </script>
 </body>
 </html>
-"""
-
-# Salvando a nova versão com o seletor de tema no rodapé
-footer_theme_file_path = Path("/mnt/data/index.html")
-footer_theme_file_path.write_text(footer_theme_html, encoding="utf-8")
-
-footer_theme_file_path.name
