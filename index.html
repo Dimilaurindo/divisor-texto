@@ -1,28 +1,194 @@
-
+# Atualizando o HTML para mover o seletor de tema discretamente para o rodapé
+footer_theme_html = """
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Divisor de Texto em Partes Menores</title>
+  <title>DIVISOR DE TEXTO DIMI_LAURINDO</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    textarea, input { width: 100%; padding: 10px; margin: 10px 0; }
-    .output-part { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; white-space: pre-wrap; background: #f9f9f9; }
-    button { padding: 10px 20px; font-size: 16px; }
+    :root {
+      --bg-color-light: #f4f4f4;
+      --text-color-light: #121212;
+      --container-bg-light: #ffffff;
+
+      --bg-color-dark: #121212;
+      --text-color-dark: #f1f1f1;
+      --container-bg-dark: #1e1e1e;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      padding: 40px;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+    }
+
+    .container {
+      max-width: 800px;
+      width: 100%;
+      background-color: var(--container-bg);
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #00ccff;
+    }
+
+    textarea, select, input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+      border: 1px solid #333;
+      background-color: inherit;
+      color: inherit;
+    }
+
+    .output-part {
+      border: 1px solid #333;
+      padding: 10px;
+      margin-bottom: 10px;
+      white-space: pre-wrap;
+      background: inherit;
+      position: relative;
+      border-radius: 4px;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 5px 10px;
+      font-size: 14px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background-color: #007BFF;
+      color: white;
+      transition: background-color 0.3s;
+    }
+
+    .copy-btn.copied {
+      background-color: #28a745;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 10px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      margin-top: 30px;
+      opacity: 0.6;
+    }
+
+    .footer select {
+      width: auto;
+      padding: 4px 8px;
+      font-size: 12px;
+      margin-top: 5px;
+      background-color: #2a2a2a;
+      color: #f1f1f1;
+      border-radius: 4px;
+      border: 1px solid #444;
+    }
   </style>
 </head>
 <body>
-  <h2>Divisor de Texto</h2>
-  <textarea id="inputText" rows="10" placeholder="Cole seu texto aqui..."></textarea>
-  <input type="number" id="limit" placeholder="Número máximo de caracteres por parte (ex: 2000)">
-  <button onclick="dividirTexto()">Dividir Texto</button>
-  <h3>Partes Divididas:</h3>
-  <div id="resultado"></div>
+  <div class="container">
+    <h2>DIVISOR DE TEXTO DIMI_LAURINDO</h2>
+
+    <textarea id="inputText" rows="10" placeholder="Cole seu texto aqui..."></textarea>
+
+    <label for="presetLimit">Escolha o limite de caracteres:</label>
+    <select id="presetLimit" onchange="atualizarLimite()">
+      <option value="1000">1000</option>
+      <option value="2000" selected>2000</option>
+      <option value="3000">3000</option>
+      <option value="4000">4000</option>
+      <option value="5000">5000</option>
+      <option value="6000">6000</option>
+      <option value="7000">7000</option>
+      <option value="8000">8000</option>
+      <option value="9000">9000</option>
+      <option value="custom">Outro (digite abaixo)</option>
+    </select>
+    <input type="number" id="customLimit" placeholder="Digite um valor personalizado" oninput="usarPersonalizado()">
+    <button onclick="dividirTexto()">Dividir Texto</button>
+    <h3>Partes Divididas:</h3>
+    <div id="resultado"></div>
+
+    <div class="footer">
+      Tema:
+      <select id="themeSelect" onchange="aplicarTema()">
+        <option value="auto">Automático</option>
+        <option value="light">Claro</option>
+        <option value="dark" selected>Escuro</option>
+      </select>
+    </div>
+  </div>
 
   <script>
+    function aplicarTema() {
+      const tema = document.getElementById('themeSelect').value;
+      let root = document.documentElement;
+
+      if (tema === 'light') {
+        root.style.setProperty('--bg-color', getComputedStyle(root).getPropertyValue('--bg-color-light'));
+        root.style.setProperty('--text-color', getComputedStyle(root).getPropertyValue('--text-color-light'));
+        root.style.setProperty('--container-bg', getComputedStyle(root).getPropertyValue('--container-bg-light'));
+      } else if (tema === 'dark') {
+        root.style.setProperty('--bg-color', getComputedStyle(root).getPropertyValue('--bg-color-dark'));
+        root.style.setProperty('--text-color', getComputedStyle(root).getPropertyValue('--text-color-dark'));
+        root.style.setProperty('--container-bg', getComputedStyle(root).getPropertyValue('--container-bg-dark'));
+      } else {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.getElementById('themeSelect').value = prefersDark ? 'dark' : 'light';
+        aplicarTema();
+      }
+    }
+
+    function atualizarLimite() {
+      const select = document.getElementById('presetLimit');
+      const input = document.getElementById('customLimit');
+      if (select.value !== 'custom') {
+        input.value = '';
+        input.disabled = true;
+      } else {
+        input.disabled = false;
+      }
+    }
+
+    function usarPersonalizado() {
+      document.getElementById('presetLimit').value = 'custom';
+    }
+
     function dividirTexto() {
       const texto = document.getElementById('inputText').value.trim();
-      const limite = parseInt(document.getElementById('limit').value);
+      const select = document.getElementById('presetLimit');
+      const custom = document.getElementById('customLimit').value;
+      const limite = parseInt(select.value !== 'custom' ? select.value : custom);
       const resultado = document.getElementById('resultado');
       resultado.innerHTML = '';
 
@@ -31,17 +197,16 @@
         return;
       }
 
-      const paragrafos = texto.split(/\n\s*\n/); // separa por parágrafos
+      const paragrafos = texto.split(/\\n\\s*\\n/);
       let parteAtual = '';
       let partes = [];
 
       for (let p of paragrafos) {
-        if ((parteAtual + '\n\n' + p).length <= limite) {
-          parteAtual += (parteAtual ? '\n\n' : '') + p;
+        if ((parteAtual + '\\n\\n' + p).length <= limite) {
+          parteAtual += (parteAtual ? '\\n\\n' : '') + p;
         } else {
           if (parteAtual) partes.push(parteAtual);
           if (p.length > limite) {
-            // divide parágrafo longo demais
             for (let i = 0; i < p.length; i += limite) {
               partes.push(p.slice(i, i + limite));
             }
@@ -56,10 +221,36 @@
       partes.forEach((parte, i) => {
         const div = document.createElement('div');
         div.className = 'output-part';
-        div.textContent = `Parte ${i + 1}:\n\n${parte}`;
+        div.innerHTML = `<strong>Parte ${i + 1}:</strong><br><br>${parte.replace(/\\n/g, "<br>")}`;
+        const button = document.createElement('button');
+        button.className = 'copy-btn';
+        button.textContent = 'Copiar';
+        button.onclick = () => {
+          navigator.clipboard.writeText(parte).then(() => {
+            button.classList.add('copied');
+            button.textContent = 'Copiado!';
+            setTimeout(() => {
+              button.classList.remove('copied');
+              button.textContent = 'Copiar';
+            }, 2000);
+          });
+        };
+        div.appendChild(button);
         resultado.appendChild(div);
       });
     }
+
+    window.onload = () => {
+      aplicarTema();
+      atualizarLimite();
+    };
   </script>
 </body>
 </html>
+"""
+
+# Salvando a nova versão com o seletor de tema no rodapé
+footer_theme_file_path = Path("/mnt/data/index.html")
+footer_theme_file_path.write_text(footer_theme_html, encoding="utf-8")
+
+footer_theme_file_path.name
