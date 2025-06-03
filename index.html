@@ -1,0 +1,65 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Divisor de Texto em Partes Menores</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    textarea, input { width: 100%; padding: 10px; margin: 10px 0; }
+    .output-part { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; white-space: pre-wrap; background: #f9f9f9; }
+    button { padding: 10px 20px; font-size: 16px; }
+  </style>
+</head>
+<body>
+  <h2>Divisor de Texto</h2>
+  <textarea id="inputText" rows="10" placeholder="Cole seu texto aqui..."></textarea>
+  <input type="number" id="limit" placeholder="Número máximo de caracteres por parte (ex: 2000)">
+  <button onclick="dividirTexto()">Dividir Texto</button>
+  <h3>Partes Divididas:</h3>
+  <div id="resultado"></div>
+
+  <script>
+    function dividirTexto() {
+      const texto = document.getElementById('inputText').value.trim();
+      const limite = parseInt(document.getElementById('limit').value);
+      const resultado = document.getElementById('resultado');
+      resultado.innerHTML = '';
+
+      if (!texto || isNaN(limite) || limite <= 0) {
+        alert("Insira um texto válido e um limite de caracteres.");
+        return;
+      }
+
+      const paragrafos = texto.split(/\n\s*\n/); // separa por parágrafos
+      let parteAtual = '';
+      let partes = [];
+
+      for (let p of paragrafos) {
+        if ((parteAtual + '\n\n' + p).length <= limite) {
+          parteAtual += (parteAtual ? '\n\n' : '') + p;
+        } else {
+          if (parteAtual) partes.push(parteAtual);
+          if (p.length > limite) {
+            // divide parágrafo longo demais
+            for (let i = 0; i < p.length; i += limite) {
+              partes.push(p.slice(i, i + limite));
+            }
+            parteAtual = '';
+          } else {
+            parteAtual = p;
+          }
+        }
+      }
+      if (parteAtual) partes.push(parteAtual);
+
+      partes.forEach((parte, i) => {
+        const div = document.createElement('div');
+        div.className = 'output-part';
+        div.textContent = `Parte ${i + 1}:\n\n${parte}`;
+        resultado.appendChild(div);
+      });
+    }
+  </script>
+</body>
+</html>
